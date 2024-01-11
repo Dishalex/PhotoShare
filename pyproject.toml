@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "photoshare"
+version = "0.1.0"
+description = "GoIT School WEB course command project of Sharing Photo FastAPI application"
+authors = ["Roman <romankuspys777@gmail.com>, Ruslan Logush <phenixruslan@gmail.com>, Maryna Kondratiuk <kondratyukmv@gmail.com>, Oleksandr Dyshliuk <dishalex@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+fastapi = "^0.109.0"
+alembic = "^1.13.1"
+SQLAlchemy = "^2.0.25"
+asyncpg = "^0.29.0"
+uvicorn = "^0.25.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
