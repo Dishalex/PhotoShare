@@ -3,9 +3,9 @@ from sqlalchemy.orm import DeclarativeBase, relationship
 import enum
 
 
-
 class Base(DeclarativeBase):
     pass
+
 
 image_m2m_tag = Table(
     "image_m2m_tag",
@@ -73,11 +73,11 @@ class Comment(Base):
     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
 
 
-
 class TransformedImage(Base):
     __tablename__ = "transformed_images"
     id = Column(Integer, primary_key=True)
-    image_id = Column(Integer, ForeignKey("images.id", ondelete='CASCADE'), nullable=False) # тут, я додав ondelete cascade 
+    image_id = Column(Integer, ForeignKey("images.id", ondelete='CASCADE'),
+                      nullable=False)  # тут, я додав ondelete cascade
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
     transformation_url = Column(String(255), nullable=False)
