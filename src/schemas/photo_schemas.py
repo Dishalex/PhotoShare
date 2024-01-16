@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, HttpUrl
+from fastapi import UploadFile, File
 
 
 class TagBase(BaseModel):
@@ -15,22 +16,23 @@ class TagResponse(TagBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Замість orm_mode
 
 
 class ImageBase(BaseModel):
-    url: str
+    file: UploadFile = File(...)
+    url: HttpUrl
     public_id: str
     description: str
-    user_id: int
-    tags: List[TagCreate] = []  # Змінено на List[TagCreate]
+    user_id: int = 1
+    tags: List[TagCreate] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Замість orm_mode
 
 
-class ImageCreate(ImageBase):
-    pass
+class ImageUpload(ImageBase):
+    file: UploadFile = File(...)
 
 
 class ImageUpdate(ImageBase):
@@ -42,4 +44,4 @@ class ImageResponse(ImageBase):
     tags: List[TagResponse] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Замість orm_mode

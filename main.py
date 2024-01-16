@@ -4,9 +4,12 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
+from src.routes import photo_routes
 from src.utils import messages
 
 app = FastAPI()
+
+app.include_router(photo_routes.router, prefix='/api')
 
 
 @app.get("/")
