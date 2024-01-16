@@ -11,6 +11,16 @@ python = "^3.11"
 uvicorn = {extras = ["standard"], version = "^0.25.0"}
 pydantic-settings = "^2.1.0"
 pydantic = {extras = ["email"], version = "^2.5.3"}
+fastapi = "^0.109.0"
+sqlalchemy = "^2.0.25"
+psycopg2 = "^2.9.9"
+alembic = "^1.13.1"
+redis = "^5.0.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.6"
+fastapi-mail = "^1.4.1"
+libgravatar = "^1.0.4"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.109.0"
