@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.database.db import get_db
 from src.routes import photo_routes
 from src.utils import messages
-from src.routes import comment_routes, auth_routes
+from src.routes import comment_routes, auth_routes, photo_routes
 
 app = FastAPI()
 
@@ -26,7 +26,7 @@ app.add_middleware(
 
 # app.include_router(auth_routes.router, prefix='/api')
 app.include_router(comment_routes.router, prefix='/api')
-
+app.include_router(photo_routes.router, prefix='/api')
 
 @app.get("/")
 def index():
