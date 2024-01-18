@@ -3,9 +3,9 @@ from sqlalchemy.orm import DeclarativeBase, relationship
 import enum
 
 
-
 class Base(DeclarativeBase):
     pass
+
 
 image_m2m_tag = Table(
     "image_m2m_tag",
@@ -25,7 +25,7 @@ class Role(enum.Enum):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False, unique=True)
+    username = Column(String(50), nullable=False, unique=True)
     first_name = Column(String(25), nullable=True)
     last_name = Column(String(25), nullable=True)
     email = Column(String(50), nullable=False, unique=True)
@@ -41,6 +41,17 @@ class User(Base):
     avatar = Column(String(255), nullable=True)
 
 
+# class TransformedImage(Base):
+#     __tablename__ = "transformed_images"
+#     id = Column(Integer, primary_key=True)
+#     image_id = Column(Integer, ForeignKey("images.id", ondelete='CASCADE'), nullable=False) 
+#     created_at = Column('created_at', DateTime, default=func.now())
+#     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
+#     transformation_url = Column(String(255), nullable=False)
+#     qr_code_url = Column(String(255), nullable=True, server_default="")
+#     image = relationship("Image", back_populates="transformed_link")
+
+
 class Image(Base):
     __tablename__ = "images"
     id = Column(Integer, primary_key=True)
@@ -51,7 +62,7 @@ class Image(Base):
     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
     user_id = Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), default=None)
     tags = relationship("Tag", secondary=image_m2m_tag, back_populates="images")
-    transformed_link = relationship("TransformedImageLink", back_populates="images")
+    # transformed_link = relationship("TransformedImageLink", back_populates="image")
     comments = relationship("Comment", backref="images")
     qr_url = Column(String(255), nullable=True)
 
@@ -73,13 +84,9 @@ class Comment(Base):
     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
 
 
-
-class TransformedImage(Base):
-    __tablename__ = "transformed_images"
+class Rating(Base):
+    __tablename__ = "ratings"
     id = Column(Integer, primary_key=True)
-    image_id = Column(Integer, ForeignKey("images.id", ondelete='CASCADE'), nullable=False) # тут, я додав ondelete cascade 
-    created_at = Column('created_at', DateTime, default=func.now())
-    updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
-    transformation_url = Column(String(255), nullable=False)
-    qr_code_url = Column(String(255), nullable=True, server_default="")
-    image = relationship("Image", back_populates="transformed_link")
+    rate = Column(Integer, default=0)
+    user_id = Column("user_id", ForeignKey("users.id", ondelete="CASCADE"))
+    image_id = Column("image_id", ForeignKey("images.id", ondelete="CASCADE"))
