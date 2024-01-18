@@ -17,6 +17,10 @@ passlib = "^1.7.4"
 pyjwt = "^2.8.0"
 fastapi-mail = "^1.4.1"
 fastapi-limiter = "^0.1.6"
+python-jose = "^3.3.0"
+libgravatar = "^1.0.4"
+python-multipart = "^0.0.6"
+cloudinary = "^1.38.0"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.109.0"

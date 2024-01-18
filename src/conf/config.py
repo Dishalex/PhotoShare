@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DB_URL: str = "postgresql+asyncpg://db_name:db_pass123@hostname:port123/name"
+    DB_URL: str = "postgresql+asyncpg://postgres:567234@localhost:5432/photoshare"
     SECRET_KEY_JWT: str = "1234567890"
     ALGORITHM: str = "HS256"
     MAIL_USERNAME: EmailStr = "example@mail.com"
