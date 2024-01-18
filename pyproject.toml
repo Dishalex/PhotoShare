@@ -21,6 +21,8 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 python-multipart = "^0.0.6"
 fastapi-mail = "^1.4.1"
 libgravatar = "^1.0.4"
+psycopg2-binary = "^2.9.9"
+cloudinary = "^1.38.0"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.109.0"

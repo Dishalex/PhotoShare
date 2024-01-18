@@ -39,9 +39,8 @@ class ImageUpdate(ImageBase):
     pass
 
 
-class ImageResponse(ImageBase):
+class ImageModel(ImageBase):
     id: int
-    tags: List[TagResponse] = []
-
-    class Config:
-        from_attributes = True  # Замість orm_mode
+    url: str
+    public_id: str
+    user_id: int
