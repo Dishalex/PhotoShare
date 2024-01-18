@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "photoshare"
 version = "0.1.0"
-description = "GoIT School WEB course command project of Sharing Photo FastAPI application"
+description = "GoIT School WEB course team project of Sharing Photo FastAPI application"
 authors = ["Roman <romankuspys777@gmail.com>, Ruslan Logush <phenixruslan@gmail.com>, Maryna Kondratiuk <kondratyukmv@gmail.com>, Oleksandr Dyshliuk <dishalex@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -11,6 +11,12 @@ python = "^3.11"
 uvicorn = {extras = ["standard"], version = "^0.25.0"}
 pydantic-settings = "^2.1.0"
 pydantic = {extras = ["email"], version = "^2.5.3"}
+gravatar = "^0.1"
+redis = "^5.0.1"
+passlib = "^1.7.4"
+pyjwt = "^2.8.0"
+fastapi-mail = "^1.4.1"
+fastapi-limiter = "^0.1.6"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.109.0"
