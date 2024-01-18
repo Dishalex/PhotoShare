@@ -25,7 +25,7 @@ class Role(enum.Enum):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False, unique=True)
+    username = Column(String(50), nullable=False, unique=True)
     first_name = Column(String(25), nullable=True)
     last_name = Column(String(25), nullable=True)
     email = Column(String(50), nullable=False, unique=True)
