@@ -7,10 +7,10 @@ class Settings(BaseSettings):
     DB_URL: str = "postgresql+asyncpg://postgres:567234@localhost:5432/photoshare"
     SECRET_KEY_JWT: str = "1234567890"
     ALGORITHM: str = "HS256"
-    MAIL_USERNAME: EmailStr = "example@mail.com"
+    MAIL_USERNAME: EmailStr = "postgres@meail.com"
     MAIL_PASSWORD: str = "postgres"
     MAIL_FROM: str = "user@example.com"
-    MAIL_PORT: int = 234567
+    MAIL_PORT: int = 567234
     MAIL_SERVER: str = "postgres"
     REDIS_DOMAIN: str = "localhost"
     REDIS_PORT: int = 6379
@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # cloudinary_name: str
     # cloudinary_api_key: str
     # cloudinary_api_secret: str
-    CLD_NAME: str = "abc"
-    CLD_API_KEY: int = 23132164564
+    CLD_NAME: str = "photoshare"
+    CLD_API_KEY: int = 326488457974591
     CLD_API_SECRET: str = "secret"
 
     @field_validator("ALGORITHM")
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
             raise ValueError("Algorithm must be HS256 or HS512")
         return v
 
-    model_config = ConfigDict(extra="ignore", env_file = ".env", env_file_encoding = "utf-8")
+    model_config = ConfigDict(extra="ignore", env_file=".env", env_file_encoding="utf-8")
 
 
 config = Settings()

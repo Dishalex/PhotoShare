@@ -11,13 +11,15 @@ from fastapi.templating import Jinja2Templates
 
 import redis.asyncio as redis
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio  import AsyncSession
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from src.database.db import get_db
 from src.utils import messages
-from src.routes import auth_routes, user_routes
-from src.conf.config import config
 
+from src.conf.config import config
+from src.routes import comment_routes, auth_routes, photo_routes
 
 app = FastAPI()
 origins = ["*"]
@@ -48,6 +50,9 @@ app.mount("/static", StaticFiles(directory=directory), name="static")
 
 app.include_router(auth_routes.router, prefix="/api")
 app.include_router(user_routes.router, prefix="/api")
+app.include_router(comment_routes.router, prefix='/api')
+app.include_router(photo_routes.router, prefix='/api')
+
 
 
 @app.on_event("startup")
@@ -66,7 +71,6 @@ templates = Jinja2Templates(directory=BASE_DIR / 'src' / 'templates')
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return templates.TemplateResponse(name='index.html', context={"request": request, "message": "PhotoShare Application"})
-
 
 @app.get("/api/healthchecker")
 async def healthchecker(db: AsyncSession = Depends(get_db)):
