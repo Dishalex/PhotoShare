@@ -1,41 +1,46 @@
-
+from sqlalchemy.future import select
+from src.entity.models import Comment, User
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.entity.models import Comment
 from datetime import datetime
-from sqlalchemy import select, extract, between
 
-async def create_comment(db: AsyncSession, photo_id: int, text: str, user_id: int) -> Comment:
-    comment = Comment(text=text, photo_id=photo_id, user_id=user_id)
+
+async def create_comment(db: AsyncSession, image_id: int, comment_text: str, user: User):
+    comment = Comment(comment=comment_text, image_id=image_id, user_id=user.id)
     db.add(comment)
     await db.commit()
-    await db.refresh(comment)
+    await db.refresh(comment)  # Оновлення об'єкта коментаря після збереження
     return comment
 
 
-async def update_comment(db: AsyncSession, comment_id: int, text: str, user_id: int) -> Comment:
-    comment = await db.execute(
-        select(Comment).filter(Comment.id == comment_id).where(Comment.user_id == user_id)).first()
+async def update_comment(db: AsyncSession, comment_id: int, text: str, user: User):
+    comment = await db.execute(select(Comment).filter(Comment.id == comment_id))
+    comment = comment.scalar()
 
     if not comment:
         return None
 
-    comment.text = text
+    if user.role.name == "user" and comment.user_id != user.id:
+        return None
+
+    comment.comment = text
     comment.updated_at = datetime.utcnow()
-
     await db.commit()
     await db.refresh(comment)
 
     return comment
 
 
-async def delete_comment(db: AsyncSession, comment_id: int, user_id: int) -> None:
-    comment = await db.execute(
-        select(Comment).filter(Comment.id == comment_id)).first()
+async def delete_comment(db: AsyncSession, comment_id: int, user: User):
+    comment = await db.execute(select(Comment).filter(Comment.id == comment_id))
+    comment_ = comment.scalar()
 
-    if not comment:
-        return None
+    if not comment_:
+        return False
 
-    db.delete(comment)
-    await db.commit()
+    if user.role.name == "user" and comment_.user_id == user.id:
+        return False
 
-
+    if user.role.name == "admin" or user.role.name == "moderator":
+        await db.delete(comment_)
+        await db.commit()
+        return True

@@ -1,47 +1,46 @@
-from fastapi import APIRouter, Body, HTTPException, Depends, status, Path, Query
-from datetime import datetime
-from sqlalchemy.ext.asyncio  import AsyncSession
+from fastapi import APIRouter, HTTPException, Depends, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.entity.models import Comment, Role, User
+from src.entity.models import User
 from src.database.db import get_db
 
 from src.services.auth_service import get_current_user
-from src.repository import comments
+from src.schemas.comment_schemas import CommentSchema, CommentsResponse
+from src.repository.comments import create_comment, update_comment, delete_comment
 # потібна функція get_current_user
 
 router = APIRouter(prefix='/comments', tags=['comments'])
 
 
 # Роут для створення коментарів
-@router.post("/")
-async def create_comment(photo_id: int, text: str, current_user: User = Depends(get_current_user),
-                         db: AsyncSession = Depends(get_db)):
-    comment = await comments.create_comment(db, photo_id=photo_id, text=text, user_id=current_user.id)
-    return comment
+@router.post("/", response_model=CommentsResponse, status_code=status.HTTP_201_CREATED)
+async def create_comments(comment_data: CommentSchema, image_id: int,
+                          current_user: User = Depends(get_current_user),
+                          db: AsyncSession = Depends(get_db)):
+    try:
+        created_comment = await create_comment(db, image_id, comment_data.comment, current_user)
+        return created_comment
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 # Роут для редагування коментарів
-@router.put("/{comment_id}/")
-async def update_comment(comment_id: int, text: str, current_user: User = Depends(get_current_user),
-                         db: AsyncSession = Depends(get_db)):
-    updated_comment = await comments.update_comment(db, comment_id=comment_id, text=text, user_id=current_user.id)
+@router.put("/{comment_id}/", response_model=CommentsResponse)
+async def update_comments(comment_id: int, comment: CommentSchema,
+                          current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    updated_comment = await update_comment(db, comment_id, comment.comment, current_user)
 
-    if not updated_comment:
-        raise HTTPException(status_code=404, detail="Comment not found")
+    if updated_comment:
+        return updated_comment
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found or permission denied")
 
-    if updated_comment.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Permission denied")
-
-    return updated_comment
 
 # Роут для видалення коментарів
-@router.delete("/{comment_id}/")
-async def delete_comment(comment_id: int, current_user: User = Depends(get_current_user),
-                         db: AsyncSession = Depends(get_db)):
+@router.delete("/{comment_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_comments(comment_id: int, current_user: User = Depends(get_current_user),
+                          db: AsyncSession = Depends(get_db)):
+    success = await delete_comment(db, comment_id, current_user)
 
-    if current_user.role == "user":
-        raise HTTPException(status_code=403, detail="Permission denied")
-
-    await comments.delete_comment(db, comment_id=comment_id, user_id=current_user.id)
-
-    return {"message": "Comment deleted successfully"}
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found or permission denied")
