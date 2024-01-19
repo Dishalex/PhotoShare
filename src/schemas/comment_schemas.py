@@ -2,11 +2,11 @@ import datetime
 from pydantic import BaseModel, Field
 
 
-class CommentModel(BaseModel):
+class CommentSchema(BaseModel):
     comment: str = Field(default='default text', min_length=1, max_length=255)
 
 
-class CommentResponse(BaseModel):
+class CommentsResponse(BaseModel):
     id: int
     user_id: int
     image_id: int
