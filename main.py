@@ -19,7 +19,7 @@ from src.database.db import get_db
 from src.utils import messages
 
 from src.conf.config import config
-from src.routes import comment_routes, auth_routes, photo_routes
+from src.routes import comment_routes, auth_routes, photo_routes, user_routes
 
 app = FastAPI()
 origins = ["*"]
