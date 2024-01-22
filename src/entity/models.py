@@ -41,17 +41,6 @@ class User(Base):
     avatar = Column(String(255), nullable=True)
 
 
-# class TransformedImage(Base):
-#     __tablename__ = "transformed_images"
-#     id = Column(Integer, primary_key=True)
-#     image_id = Column(Integer, ForeignKey("images.id", ondelete='CASCADE'), nullable=False) 
-#     created_at = Column('created_at', DateTime, default=func.now())
-#     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
-#     transformation_url = Column(String(255), nullable=False)
-#     qr_code_url = Column(String(255), nullable=True, server_default="")
-#     image = relationship("Image", back_populates="transformed_link")
-
-
 class Image(Base):
     __tablename__ = "images"
     id = Column(Integer, primary_key=True)

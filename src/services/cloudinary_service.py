@@ -2,7 +2,7 @@ import hashlib
 import datetime
 import cloudinary
 import cloudinary.uploader
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from src.conf.config import config
 
 
@@ -32,8 +32,8 @@ class CloudImage:
         )
         return src_url
 
-    def delete_img(self, public_id: str):
-        cloudinary.uploader.destroy(public_id, resource_type="image")
+    async def delete_img(self, public_id: str):
+        await cloudinary.uploader.destroy(public_id, resource_type="image")
         return f"{public_id} deleted"
 
     async def change_size(self, public_id: str, width: int) -> str:
