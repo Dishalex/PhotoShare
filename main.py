@@ -69,7 +69,6 @@ async def startup():
         await FastAPILimiter.init(r)
     except Exception as e:
         print("Error during startup:", e)
-        # Ви можете також викинути HTTPException з відповідним кодом помилки HTTP, якщо потрібно.
 
 templates = Jinja2Templates(directory=BASE_DIR / 'src' / 'templates')
 
@@ -83,9 +82,6 @@ def index(request: Request):
 @app.get("/api/healthchecker")
 async def healthchecker(db: AsyncSession = Depends(get_db)):
     try:
-        # Замініть цей рядок:
-        # result = await db.execute(text(messages.SELECT_1))
-        # На ці рядки:
         async with db.begin():
             result = await db.execute(text(messages.SELECT_1))
         result = result.fetchone()
