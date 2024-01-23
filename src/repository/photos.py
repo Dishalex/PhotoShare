@@ -40,10 +40,10 @@ async def add_image(
 
 async def delete_image(db: AsyncSession, image_id: int) -> Image | None:
     result = await db.execute(select(Image).filter(Image.id == image_id))
-    image = result.fetchone()
+    image = result.scalar()
 
     if image:
-        await image_cloudinary.delete_img(image.public_id)
+        image_cloudinary.delete_img(image.public_id)
         await db.delete(image)
         await db.commit()
 
@@ -166,16 +166,13 @@ async def get_all_images(
     current_user: User,
     keyword: str = None,
     tag: str = None,
-    min_rating: float = None,
 ) -> ImagesByFilter:
     query = select(Image)
     if keyword:
         query = query.filter(Image.description.ilike(f"%{keyword}%"))
     if tag:
         query = query.filter(Image.tags.any(Tag.tag_name == tag))
-    if min_rating is not None:
-        query = query.join(Rating, Image.id == Rating.image_id)
-        query = query.group_by(Image.id).having(func.avg(Rating.rate) >= min_rating)
+    
     query = query.order_by(desc(Image.created_at))
     result = await db.execute(query)
     images = []
@@ -215,7 +212,7 @@ async def create_qr(body: ImageTransformModel, db: AsyncSession, user: User) -> 
     if image.qr_url:
         return ImageQRResponse(image_id=image.id, qr_code_url=image.qr_url)
 
-    qr = qrcode.QRCode()
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(image.url)
     qr.make(fit=True)
 
@@ -226,13 +223,13 @@ async def create_qr(body: ImageTransformModel, db: AsyncSession, user: User) -> 
 
     new_public_id = CloudImage.generate_name_image(user.email)
 
-    upload_file = await CloudImage.upload_image(qr_code_img, new_public_id)
+    upload_file = CloudImage.upload_image(qr_code_img, new_public_id)
 
-    qr_code_url = await CloudImage.get_url_for_image(new_public_id, upload_file)
+    qr_code_url = CloudImage.get_url_for_image(new_public_id, upload_file)
 
     image.qr_url = qr_code_url
 
-    await db.commit()
+    db.commit()
 
     return ImageQRResponse(image_id=image.id, qr_code_url=qr_code_url)
 

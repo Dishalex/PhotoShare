@@ -27,6 +27,7 @@ libgravatar = "^1.0.4"
 psycopg2-binary = "^2.9.9"
 cloudinary = "^1.38.0"
 django-qrcode = "^0.3"
+qrcode = "^7.4.2"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.109.0"
