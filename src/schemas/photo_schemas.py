@@ -1,46 +1,56 @@
-from typing import List, Optional
-
+from typing import List
 from pydantic import BaseModel, Field, HttpUrl
-from fastapi import UploadFile, File
+
+from src.schemas.comment_schemas import CommentByUser
 
 
-class TagBase(BaseModel):
-    tag_name: str
-
-
-class TagCreate(TagBase):
-    pass
-
-
-class TagResponse(TagBase):
-    id: int
-
-    class Config:
-        from_attributes = True  # Замість orm_mode
-
-
-class ImageBase(BaseModel):
-    file: UploadFile = File(...)
-    url: HttpUrl
-    public_id: str
-    description: str
-    user_id: int = 1
-    tags: List[TagCreate] = []
-
-    class Config:
-        from_attributes = True  # Замість orm_mode
-
-
-class ImageUpload(ImageBase):
-    file: UploadFile = File(...)
-
-
-class ImageUpdate(ImageBase):
-    pass
-
-
-class ImageModel(ImageBase):
+class ImageModel(BaseModel):
     id: int
     url: str
     public_id: str
     user_id: int
+
+
+class ImageProfile(BaseModel):
+    url: str
+    description: str | None
+    average_rating: float | None
+    tags: List[str] | None
+    comments: List[CommentByUser] | None
+
+
+class ImageAddResponse(BaseModel):
+    image: ImageModel
+    detail: str = "Image has been added"
+
+
+class ImageDeleteResponse(BaseModel):
+    detail: str = "Image has been deleted"
+
+
+class ImageUpdateResponse(BaseModel):
+    id: int
+    description: str
+    detail: str = "Image has been updated"
+
+
+class ImageURLResponse(BaseModel):
+    url: str
+
+
+class ImageChangeSizeModel(BaseModel):
+    id: int
+    width: int = 200
+
+
+class ImageTransformModel(BaseModel):
+    id: int
+
+
+class ImageQRResponse(BaseModel):
+    image_id: int
+    qr_code_url: str
+
+
+class ImagesByFilter(BaseModel):
+    images: List[ImageProfile]
