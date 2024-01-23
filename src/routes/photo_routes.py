@@ -159,8 +159,7 @@ async def search_images(
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(auth_service.get_current_user),
         keyword: str = Query(default=None),
-        tag: str = Query(default=None),
-        min_rating: int = Query(default=None),
+        tag: str = Query(default=None)
 ):
     """
     Search for images based on specified filters.
@@ -181,7 +180,7 @@ async def search_images(
     :rtype: ImagesByFilter
     """
     try:
-        all_images = await get_all_images(db, current_user, keyword, tag, min_rating)
+        all_images = await get_all_images(db, current_user, keyword, tag)
         return all_images
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -357,8 +356,9 @@ async def black_white_image(
     return image
 
 
-@router.get("/list", response_model=list[ImageModel])
-async def list_images(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Image).offset(skip).limit(limit))
-    images = result.scalars().all()
-    return images
+# @router.get("/list", response_model=list[ImageModel], dependencies=[Depends(all_roles)])
+# async def list_images(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db)):
+#     stmt = select(Image).offset(skip).limit(limit)
+#     result = await db.execute(stmt)
+#     images = result.scalars().all()
+#     return images
