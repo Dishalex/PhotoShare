@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "photoshare"
+version = "0.1.0"
+description = "GoIT School WEB course team project of Sharing Photo FastAPI application"
+authors = ["Roman <romankuspys777@gmail.com>, Ruslan Logush <phenixruslan@gmail.com>, Maryna Kondratiuk <kondratyukmv@gmail.com>, Oleksandr Dyshliuk <dishalex@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
+pydantic-settings = "^2.1.0"
+pydantic = {extras = ["email"], version = "^2.5.3"}
+gravatar = "^0.1"
+pyjwt = "^2.8.0"
+fastapi-limiter = "^0.1.6"
+python-multipart = "^0.0.6"
+fastapi = "^0.109.0"
+sqlalchemy = "^2.0.25"
+psycopg2 = "^2.9.9"
+alembic = "^1.13.1"
+redis = "^5.0.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+fastapi-mail = "^1.4.1"
+libgravatar = "^1.0.4"
+psycopg2-binary = "^2.9.9"
+cloudinary = "^1.38.0"
+django-qrcode = "^0.3"
+qrcode = "^7.4.2"
+
+[tool.poetry.group.dev.dependencies]
+fastapi = "^0.109.0"
+alembic = "^1.13.1"
+SQLAlchemy = "^2.0.25"
+asyncpg = "^0.29.0"
+uvicorn = "^0.25.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
