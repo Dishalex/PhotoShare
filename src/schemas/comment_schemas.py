@@ -15,9 +15,4 @@ class CommentsResponse(BaseModel):
     updated_at: datetime.datetime
 
     class Config:
-        from_attributes = True
-
-
-class CommentByUser(BaseModel):
-    user_id: int
-    comment: str
+        orm_mode = True
