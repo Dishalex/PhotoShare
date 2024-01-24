@@ -356,6 +356,35 @@ async def black_white_image(
     return image
 
 
+@router.post(
+    "/fade_edges", response_model=ImageAddResponse, status_code=status.HTTP_201_CREATED
+)
+async def fade_edges_image(
+    body: ImageTransformModel,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(auth_service.get_current_user),
+):
+    """
+    Apply fade edges transformation to an image.
+
+    This endpoint allows the user to apply a fade edges transformation to an existing image.
+
+    :param body: Data for the fade edges transformation.
+    :type body: ImageTransformModel
+    :param db: Database session.
+    :type db: Session
+    :param current_user: Currently authenticated user.
+    :type current_user: User
+    :return: Response containing information about the modified image.
+    :rtype: ImageAddResponse
+    """
+    image = await repository_image.fade_edges_image(body=body, db=db, user=current_user)
+    if image is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=messages.IMAGE_NOT_FOUND
+        )
+    return image
+
 # @router.get("/list", response_model=list[ImageModel], dependencies=[Depends(all_roles)])
 # async def list_images(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_db)):
 #     stmt = select(Image).offset(skip).limit(limit)

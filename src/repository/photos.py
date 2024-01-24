@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.repository import ratings as repository_ratings
 
 from src.entity.models import Image, User, Tag, Rating
-from src.routes.tags import create_tag
+from src.routes.tags_routes import create_tag
 from src.schemas.photo_schemas import (
     ImageChangeSizeModel,
     ImageAddResponse,
