@@ -1,5 +1,7 @@
 import hashlib
 import datetime
+from typing import Tuple
+
 import cloudinary
 import cloudinary.uploader
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,26 +44,24 @@ class CloudImage:
         cloudinary.uploader.destroy(public_id, resource_type="image")
         return f"{public_id} deleted"
 
-
     @staticmethod
-    async def change_size(self, public_id: str, width: int) -> str:
+    async def change_size(public_id: str, width: int) -> Tuple[str, str]:
         img = cloudinary.CloudinaryImage(public_id).image(
             transformation=[{"width": width, "crop": "pad"}]
         )
         url = img.split('"')
         upload_image = cloudinary.uploader.upload(url[1], folder="photo_share")
         return upload_image["url"], upload_image["public_id"]
-    
+
     @staticmethod
-    async def fade_edges_image(self, public_id: str, effect: str = "vignette") -> str:
+    async def fade_edges_image(public_id: str, effect: str = "vignette") -> str:
         img = cloudinary.CloudinaryImage(public_id).image(effect=effect)
         url = img.split('"')
         upload_image = cloudinary.uploader.upload(url[1], folder="photo_share")
         return upload_image["url"], upload_image["public_id"]
     
     @staticmethod
-    async def make_black_white_image(
-        self, public_id: str, effect: str = "art:audrey"
+    async def make_black_white_image(public_id: str, effect: str = "art:audrey"
     ) -> str:
         img = cloudinary.CloudinaryImage(public_id).image(effect=effect)
         url = img.split('"')

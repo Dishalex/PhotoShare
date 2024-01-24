@@ -17,7 +17,7 @@ from src.database.db import get_db
 from src.utils import messages
 
 from src.conf.config import config
-from src.routes import comment_routes, auth_routes, photo_routes, user_routes
+from src.routes import comment_routes, auth_routes, photo_routes, user_routes, tags_routes
 
 app = FastAPI()
 origins = ["*"]
@@ -53,8 +53,9 @@ app.mount("/static", StaticFiles(directory=directory), name="static")
 
 app.include_router(auth_routes.router, prefix="/api")
 app.include_router(user_routes.router, prefix="/api")
-app.include_router(comment_routes.router, prefix='/api')
 app.include_router(photo_routes.router, prefix='/api')
+app.include_router(comment_routes.router, prefix='/api')
+app.include_router(tags_routes.router, prefix='/api')
 
 
 @app.on_event("startup")
