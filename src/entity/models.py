@@ -73,9 +73,9 @@ class Comment(Base):
     updated_at = Column("updated_at", DateTime, default=func.now(), onupdate=func.now())
 
 
-class Rating(Base):
-    __tablename__ = "ratings"
-    id = Column(Integer, primary_key=True)
-    rate = Column(Integer, default=0)
-    user_id = Column("user_id", ForeignKey("users.id", ondelete="CASCADE"))
-    image_id = Column("image_id", ForeignKey("images.id", ondelete="CASCADE"))
+# class Rating(Base):
+#     __tablename__ = "ratings"
+#     id = Column(Integer, primary_key=True)
+#     rate = Column(Integer, default=0)
+#     user_id = Column("user_id", ForeignKey("users.id", ondelete="CASCADE"))
+#     image_id = Column("image_id", ForeignKey("images.id", ondelete="CASCADE"))
