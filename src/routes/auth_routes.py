@@ -3,6 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordRequest
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.services.email_service import send_email
 
+from src.entity.models import Role
 from src.database.db import get_db
 from src.repository import users as repository_users
 
@@ -29,6 +30,15 @@ async def signup(body: UserSchema, bt: BackgroundTasks, request: Request, db: As
     :return: A user object, which is the same as the one we created in schemas
     :doc-author: Trelent
     """
+    num_users = await repository_users.get_total_users_count(db)
+    if num_users == 0:
+        body.role = Role.admin
+    elif num_users == 1:
+        body.role = Role.moderator
+    else:
+        body.role = Role.user
+
+
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=messages.ACCOUNT_EXIST)
@@ -94,7 +104,7 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(get
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
-@router.get('/confirmed_email/{token}', name="Route for email confirmation")
+@router.get('/confirmed_email/{token}', name="Email confirmation with token")
 async def confirmed_email(token: str, db: AsyncSession = Depends(get_db)):
     """
     The confirmed_email function is used to confirm a user's email address.
