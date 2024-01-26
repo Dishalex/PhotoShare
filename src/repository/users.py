@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.schemas.user_schemas import UserSchema
 from libgravatar import Gravatar
@@ -92,3 +92,11 @@ async def update_avatar_url(email: str, url: str | None, db: AsyncSession) -> Us
     await db.commit()
     await db.refresh(user)
     return user
+
+
+
+async def get_total_users_count(session: AsyncSession):
+    # Executing an asynchronous query to the database to get the total count of users
+    count = await session.execute(select(func.count(User.id)))
+    total_count = count.scalar()
+    return total_count

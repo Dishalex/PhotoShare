@@ -1,17 +1,12 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
-from pydantic import EmailStr
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-from sqlalchemy.sql import select
 from src.database.db import get_db
-from src.entity.models import Image, Tag, User
+from src.entity.models import User
 from src.repository.photos import get_all_images
 from src.schemas.photo_schemas import ImageModel
 from src.services.auth_service import auth_service
-from src.services.cloudinary_service import CloudImage, image_cloudinary
+from src.services.cloudinary_service import CloudImage
 from src.repository import photos as repository_image
 from src.services.roles import all_roles
 
@@ -31,9 +26,6 @@ from src.schemas.photo_schemas import (
 from src.schemas.tag_schemas import AddTag
 
 router = APIRouter(prefix='/images', tags=['images'])
-
-UPLOADS_DIR = "uploads"
-MAX_FILE_SIZE = 1_000_000
 
 
 @router.post(
@@ -148,7 +140,7 @@ async def update_description(
         updated_image = await repository_image.update_desc(db, image_id, description)
         return updated_image
     except SQLAlchemyError as e:
-        await db.rollback()  # Використовуємо await для асинхронного виклику
+        await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
@@ -174,8 +166,6 @@ async def search_images(
     :type keyword: str
     :param tag: Tag to filter images by.
     :type tag: str
-    :param min_rating: Minimum rating for images.
-    :type min_rating: int
     :return: Images matching the specified filters.
     :rtype: ImagesByFilter
     """

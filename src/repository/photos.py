@@ -2,9 +2,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.repository import ratings as repository_ratings
 
-from src.entity.models import Image, User, Tag, Rating
+from src.entity.models import Image, User, Tag
 from src.routes.tags_routes import create_tag
 from src.schemas.photo_schemas import (
     ImageChangeSizeModel,
@@ -167,38 +166,36 @@ async def get_all_images(
     keyword: str = None,
     tag: str = None,
 ) -> ImagesByFilter:
-    query = select(Image)
-    if keyword:
-        query = query.filter(Image.description.ilike(f"%{keyword}%"))
-    if tag:
-        query = query.filter(Image.tags.any(Tag.tag_name == tag))
+    pass
+    # query = select(Image)
+    # if keyword:
+    #     query = query.filter(Image.description.ilike(f"%{keyword}%"))
+    # if tag:
+    #     query = query.filter(Image.tags.any(Tag.tag_name == tag))
     
-    query = query.order_by(desc(Image.created_at))
-    result = await db.execute(query)
-    images = []
-    async for image in result:
-        tags = []
-        comments = []
-        async for comment in image.comments:
-            new_comment = CommentByUser(
-                user_id=comment.user_id, comment=comment.comment
-            )
-            comments.append(new_comment)
-        async for tag in image.tags:
-            new_tag = tag.tag_name
-            tags.append(new_tag)
-        rating = await repository_ratings.calculate_rating(image.id, db, current_user)
-        new_rating = rating["average_rating"]
-        new_image = ImageProfile(
-            url=image.url,
-            description=image.description,
-            average_rating=new_rating,
-            tags=tags,
-            comments=comments,
-        )
-        images.append(new_image)
-    all_images = ImagesByFilter(images=images)
-    return all_images
+    # query = query.order_by(desc(Image.created_at))
+    # result = await db.execute(query)
+    # images = []
+    # async for image in result:
+    #     tags = []
+    #     comments = []
+    #     async for comment in image.comments:
+    #         new_comment = CommentByUser(
+    #             user_id=comment.user_id, comment=comment.comment
+    #         )
+    #         comments.append(new_comment)
+    #     async for tag in image.tags:
+    #         new_tag = tag.tag_name
+    #         tags.append(new_tag)
+    #     new_image = ImageProfile(
+    #         url=image.url,
+    #         description=image.description,
+    #         tags=tags,
+    #         comments=comments,
+    #     )
+    #     images.append(new_image)
+    # all_images = ImagesByFilter(images=images)
+    # return all_images
 
 
 async def create_qr(body: ImageTransformModel, db: AsyncSession, user: User) -> ImageQRResponse:
@@ -229,7 +226,8 @@ async def create_qr(body: ImageTransformModel, db: AsyncSession, user: User) -> 
 
     image.qr_url = qr_code_url
 
-    db.commit()
+    await db.commit()
+    await db.refresh(image)
 
     return ImageQRResponse(image_id=image.id, qr_code_url=qr_code_url)
 

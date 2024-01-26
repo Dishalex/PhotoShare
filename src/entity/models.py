@@ -37,7 +37,7 @@ class User(Base):
     confirmed = Column(Boolean, default=False)
     role = Column(Enum(Role), default=Role.user)
     images = relationship("Image", backref="users")
-    ratings = relationship("Rating", backref="user")
+    # ratings = relationship("Rating", backref="user")
     avatar = Column(String(255), nullable=True)
 
 

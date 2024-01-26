@@ -2,7 +2,7 @@ import pickle
 import cloudinary
 import cloudinary.uploader
 
-from fastapi import APIRouter, Body, File, HTTPException, Depends, status, Path, Query, UploadFile
+from fastapi import APIRouter, File, Depends, UploadFile
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio  import AsyncSession
 from src.database.db import get_db
