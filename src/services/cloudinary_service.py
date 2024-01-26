@@ -4,7 +4,6 @@ from typing import Tuple
 
 import cloudinary
 import cloudinary.uploader
-from sqlalchemy.ext.asyncio import AsyncSession
 from src.conf.config import config
 
 
@@ -30,16 +29,10 @@ class CloudImage:
     @staticmethod
     def get_url_for_image(public_id, upload_file) -> str:
         src_url = cloudinary.CloudinaryImage(public_id).build_url(
-            width=250, height=250, crop="fill", version=upload_file.get("version")
+            version=upload_file.get("version")
         )
         return src_url
-    
-
-    # @staticmethod
-    # async def delete_img(self, public_id: str):
-    #     await cloudinary.uploader.destroy(public_id, resource_type="image")
-    #     return f"{public_id} deleted"
-    
+       
     def delete_img(self, public_id: str):
         cloudinary.uploader.destroy(public_id, resource_type="image")
         return f"{public_id} deleted"
